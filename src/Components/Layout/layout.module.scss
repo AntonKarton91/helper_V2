@@ -1,0 +1,37 @@
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background-size: cover !important;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sheetPrev {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  color: white;
+  background-color: rgba(105, 115, 114, 0.37);
+  border-radius: 4px;
+  font-weight: bold;
+  box-shadow: 1px 1px 1px #605f5f;
+  cursor: pointer;
+}
+
+.sheetPrevContainer {
+  position: absolute;
+  bottom: 10px;
+
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 5px;
+}
+

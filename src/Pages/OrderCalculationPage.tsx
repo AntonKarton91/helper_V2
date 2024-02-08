@@ -1,18 +1,18 @@
 import React, {useState} from 'react';
 
-enum type {
+export enum calculationType {
     OneByOne = 1,
     Set,
 }
 
 function OrderCalculationPage() {
-  const [calculationType, setCalculationType] = useState<type>(type.OneByOne)
+  const [calcType, setCalcType] = useState<calculationType>(calculationType.OneByOne)
 
   return (
-    <div className="App">
-      path {}
+    <div>
+      CalculationPage
     </div>
   );
 }
 
-export default App;
+export default OrderCalculationPage;
