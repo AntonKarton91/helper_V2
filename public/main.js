@@ -19,17 +19,17 @@ require('@electron/remote/main').initialize()
 //     });
 // });
 
-ipcMain.on('file-drop', (event, filePaths) => {
-    console.log("work")
-    filePaths.forEach((filePath) => {
-        // Обработка файлов, сохранение в директорию приложения и т.д.
-        console.log('ppa/' + path.basename(filePath));
+ipcMain.on('file-drop', (event, filePath, pathTo) => {
+    console.log(filePath)
+    // filePaths.forEach((filePath) => {
+    //     // Обработка файлов, сохранение в директорию приложения и т.д.
+    //     console.log('ppa/' + path.basename(filePath));
 
         // Пример сохранения файла в директорию
-        fs.copyFile(filePath, 'ppa/' + path.basename(filePath), (err) => {
+        fs.copyFile(filePath, 'Files/' + pathTo + "/" + path.basename(filePath), (err) => {
             if (err) console.error(err);
         });
-    });
+    // });
 });
 
 const createWindow = () => {

@@ -9,7 +9,6 @@ function HomePage() {
     return (
         <div>
             <div>HomePage</div>
-            <FileBasketComponent/>
         </div>
 
 );
