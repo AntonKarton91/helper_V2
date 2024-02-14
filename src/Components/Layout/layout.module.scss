@@ -8,8 +8,13 @@
   background-size: cover !important;
 
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+}
+
+.content {
+  background-color: #61dafb;
+  width: 100%;
 }
 
 .sheetPrev {
@@ -23,6 +28,11 @@
   font-weight: bold;
   box-shadow: 1px 1px 1px #605f5f;
   cursor: pointer;
+}
+
+.sheetPrev:hover {
+  color: #dedada;
+  box-shadow: 2px 2px 2px #333232;
 }
 
 .sheetPrevContainer {

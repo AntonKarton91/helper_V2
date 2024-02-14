@@ -1,0 +1,35 @@
+.container {
+    display: grid;
+    grid-template-rows: 50px 50px;
+}
+
+.pallet {
+    height: 50px;
+    border: 1px solid black;
+    background-color: #61dafb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dispContainer {
+    width: 100%;
+    display: grid;
+
+}
+
+.disp {
+    color: #414040;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    border: 1px solid gray;
+border-radius: 5px;
+    cursor: pointer;
+}
+
+.disp:hover {
+    background-color: #eae9e9;
+
+}

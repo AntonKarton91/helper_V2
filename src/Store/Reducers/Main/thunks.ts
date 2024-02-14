@@ -5,14 +5,15 @@ import {fileWorker} from "../../../Utils/fileWorking";
 
 
 
-export const addSheet = createAsyncThunk<{status: boolean, message: string, type: calculationType}, {dirPath: string, type: calculationType}, {rejectValue: string}>(
+export const addSheet = createAsyncThunk<{status: boolean, message: string, type: calculationType, id: string},
+    {type: calculationType}, {rejectValue: string}>(
     'main/addSheet',
 // @ts-ignore
     async function ({dirPath, type}, { rejectWithValue }) {
-        const data = await fileWorker.createFolder(dirPath)
+        const id = String(Math.random() * 1000)
+        const data = await fileWorker.createFolder("Files/" + id)
         if (data.status) {
-            console.log(type)
-            return {...data, type}
+            return {...data, type, id}
         }
         else return rejectWithValue(data.message)
     }

@@ -6,6 +6,7 @@ import PopupComponent from "../UIComponents/Popup/PopupComponent";
 import {Alert, Button} from "@mui/material";
 import {useAppDispatch, useAppSelector} from "../../Store/hooks";
 import {addSheet} from "../../Store/Reducers/Main/thunks";
+import {setActiveSheet} from "../../Store/Reducers/Main/mainSlice";
 
 
 export interface LayoutProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -23,7 +24,11 @@ const LayoutComponent = ({children}: LayoutProps): React.ReactElement => {
 
 
     const crateSheet = (type: calculationType) => {
-        dispatch(addSheet({dirPath: "dir", type}))
+        dispatch(addSheet({type}))
+    }
+
+    const clickHandler = (id: string) => {
+        dispatch(setActiveSheet(id))
     }
 
     return (
@@ -31,16 +36,18 @@ const LayoutComponent = ({children}: LayoutProps): React.ReactElement => {
             className={styles.container}
             style={{backgroundImage: "url('https://kartinki.pics/pics/uploads/posts/2022-08/1660018600_11-kartinkin-net-p-fon-dlya-programmi-krasivo-11.jpg')"}}
         >
-            <div className={styles.header}>
-                {/*<HeaderComponent/>*/}
-            </div>
             <div className={styles.content} >
                 {children}
             </div>
             <div className={styles.sheetPrevContainer}>
                 {
                     sheetList.map(sheet => {
-                        return <div className={styles.sheetPrev}>{sheet.name}</div>
+                        return <div
+                            style={{color: appStatus.activeSheet === sheet.id ? "bisque" : "white"}}
+                            className={styles.sheetPrev}
+                            onClick={()=>clickHandler(sheet.id)}
+                        >{sheet.name}
+                        </div>
                     })
                 }
                 <div className={styles.sheetPrev} onClick={()=>setPopupIsActive(true)}>+</div>

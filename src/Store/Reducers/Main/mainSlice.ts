@@ -1,7 +1,8 @@
-import {createSlice} from '@reduxjs/toolkit'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {IMainState, ISheet} from "./types";
 import {getSheetNumber} from "../../../Utils/getSheetNumber";
 import {addSheet} from "./thunks";
+import {log} from "util";
 
 
 const initialState: IMainState = {
@@ -19,7 +20,17 @@ export const mainSlice = createSlice({
     name: 'main',
     initialState,
     reducers: {
+        setActiveSheet: (state, action) => {
+            state.appStatus.activeSheet = action.payload
+        },
 
+        changeSheetData: (state, action: PayloadAction<{ data: any, id: string }>) => {
+            state.sheetList = state.sheetList.map(e=>{
+                if (e.id === action.payload.id) {
+                    return {...e, ...action.payload.data}
+                } else return e
+            })
+        },
 
     },
     extraReducers: (builder) => {
@@ -32,8 +43,8 @@ export const mainSlice = createSlice({
                 const list = [...state.sheetList]
                 const name1 = list.pop()
                 const name = state.sheetList.length>0 ? "Лист " + getSheetNumber(name1?.name || "Лист 1") : "Лист 1"
-                const id = String(Math.random() * 1000)
-                state.sheetList.push({name, type: action.payload.type, id})
+                state.sheetList.push({name, type: action.payload.type, id: action.payload.id})
+                state.appStatus.activeSheet = action.payload.id
             })
             .addCase(addSheet.rejected, (state, action) => {
                 state.appStatus.isLoading = false
@@ -45,7 +56,7 @@ export const mainSlice = createSlice({
 })
 
 export const {
-
+    setActiveSheet
 } = mainSlice.actions
 
 export default mainSlice.reducer
