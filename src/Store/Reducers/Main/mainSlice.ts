@@ -2,7 +2,6 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {IMainState, ISheet} from "./types";
 import {getSheetNumber} from "../../../Utils/getSheetNumber";
 import {addSheet} from "./thunks";
-import {log} from "util";
 
 
 const initialState: IMainState = {
@@ -25,11 +24,13 @@ export const mainSlice = createSlice({
         },
 
         changeSheetData: (state, action: PayloadAction<{ data: any, id: string }>) => {
-            state.sheetList = state.sheetList.map(e=>{
+            const changedList = [...state.sheetList]
+            state.sheetList = changedList.map(e=>{
                 if (e.id === action.payload.id) {
                     return {...e, ...action.payload.data}
                 } else return e
             })
+            console.log(state.sheetList)
         },
 
     },
@@ -43,7 +44,14 @@ export const mainSlice = createSlice({
                 const list = [...state.sheetList]
                 const name1 = list.pop()
                 const name = state.sheetList.length>0 ? "Лист " + getSheetNumber(name1?.name || "Лист 1") : "Лист 1"
-                state.sheetList.push({name, type: action.payload.type, id: action.payload.id})
+                state.sheetList.push({
+                    name,
+                    type: action.payload.type,
+                    id: action.payload.id,
+                    fileIsUpload: false,
+                    clientName: "Перетащите файлы для загрузки сюда",
+                    excelFileName: ""
+                })
                 state.appStatus.activeSheet = action.payload.id
             })
             .addCase(addSheet.rejected, (state, action) => {
@@ -56,7 +64,8 @@ export const mainSlice = createSlice({
 })
 
 export const {
-    setActiveSheet
+    setActiveSheet,
+    changeSheetData
 } = mainSlice.actions
 
 export default mainSlice.reducer

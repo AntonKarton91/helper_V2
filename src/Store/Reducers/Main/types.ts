@@ -14,5 +14,8 @@ export interface ISheet {
     id: string,
     name: string,
     type: calculationType
+    fileIsUpload: boolean
+    clientName: string
+    excelFileName: string
 }
 

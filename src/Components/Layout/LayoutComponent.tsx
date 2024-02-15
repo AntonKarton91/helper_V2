@@ -43,6 +43,7 @@ const LayoutComponent = ({children}: LayoutProps): React.ReactElement => {
                 {
                     sheetList.map(sheet => {
                         return <div
+                            key={sheet.id}
                             style={{color: appStatus.activeSheet === sheet.id ? "bisque" : "white"}}
                             className={styles.sheetPrev}
                             onClick={()=>clickHandler(sheet.id)}

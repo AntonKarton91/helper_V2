@@ -31,7 +31,11 @@ export const fileWorker = {
     getClientName: (filePaths: string) => {
         const splittedPath = filePaths.split("\\")
         return splittedPath[splittedPath.length-3]
-}
+},
+    getExcelFileName: (filePaths: string): string => {
+        return path.basename(filePaths)
+
+    }
 
 
 }

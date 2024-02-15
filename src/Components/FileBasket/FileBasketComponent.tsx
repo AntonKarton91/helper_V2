@@ -1,23 +1,29 @@
 import * as React from "react";
-import {DetailedHTMLProps, HTMLAttributes, useState} from "react";
+import {DetailedHTMLProps, HTMLAttributes, useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../Store/hooks";
 import styles from "./fileBasket.module.scss"
 import {Avatar} from "@mui/material";
 import {fileWorker} from "../../Utils/fileWorking";
+import {ISheet} from "../../Store/Reducers/Main/types";
+import {changeSheetData} from "../../Store/Reducers/Main/mainSlice";
 
 const { ipcRenderer } = window.require('electron');
 const path = window.require('path');
 
 export interface FileBasketProps {
-
+    sheetData: ISheet
 }
 
 
-const FileBasketComponent = ({}: FileBasketProps): React.ReactElement => {
-    const [ basketTitle, setBasketTitle ] = useState<string>("Перетащите файлы для загрузки сюда")
-    const [ basketIcon, setBasketIcon ] = useState<boolean>(false)
-    const { sheetList, appStatus } = useAppSelector(state => state.main)
+const FileBasketComponent = ({sheetData}: FileBasketProps): React.ReactElement => {
+    const [ basketIcon, setBasketIcon ] = useState<boolean>(sheetData.fileIsUpload)
+    const [ clientName, setClientName ] = useState<string>(sheetData.clientName)
     const dispatch = useAppDispatch()
+
+    useEffect(()=> {
+        setBasketIcon(sheetData.fileIsUpload)
+        setClientName(sheetData.clientName)
+    }, [sheetData.id])
 
     const handleDrop =  async (event:any) => {
         event.preventDefault();
@@ -25,9 +31,13 @@ const FileBasketComponent = ({}: FileBasketProps): React.ReactElement => {
 
         const filePath = fileWorker.getExcelFile(event.dataTransfer)
         if (filePath) {
-            const pathTo: string = "123"
-            await fileWorker.createFolder(`Files/${pathTo}`)
-            setBasketTitle(fileWorker.getClientName(filePath))
+            const pathTo: string = sheetData.id
+            dispatch(changeSheetData({
+                id: sheetData.id,
+                data: {clientName: fileWorker.getClientName(filePath),
+                fileIsUpload: true,
+                excelFileName: fileWorker.getExcelFileName(filePath)}}))
+            setClientName(fileWorker.getClientName(filePath))
             setBasketIcon(true)
             ipcRenderer.send('file-drop', filePath, pathTo);
         }
@@ -48,7 +58,7 @@ const FileBasketComponent = ({}: FileBasketProps): React.ReactElement => {
                 {
                     basketIcon && <Avatar src="https://cdn1.iconfinder.com/data/icons/application-file-formats/128/microsoft-excel-512.png" />
                 }
-                <div>{ basketTitle }</div>
+                <div>{ clientName }</div>
             </div>
         </div>
     );
