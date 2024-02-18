@@ -50,7 +50,8 @@ export const mainSlice = createSlice({
                     id: action.payload.id,
                     fileIsUpload: false,
                     clientName: "Перетащите файлы для загрузки сюда",
-                    excelFileName: ""
+                    excelFileName: "",
+                    excelFilePath: ""
                 })
                 state.appStatus.activeSheet = action.payload.id
             })

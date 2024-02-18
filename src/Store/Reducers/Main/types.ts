@@ -17,5 +17,6 @@ export interface ISheet {
     fileIsUpload: boolean
     clientName: string
     excelFileName: string
+    excelFilePath: string
 }
 

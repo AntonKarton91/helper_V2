@@ -32,11 +32,13 @@ const FileBasketComponent = ({sheetData}: FileBasketProps): React.ReactElement =
         const filePath = fileWorker.getExcelFile(event.dataTransfer)
         if (filePath) {
             const pathTo: string = sheetData.id
+            const exFileName = fileWorker.getExcelFileName(filePath)
             dispatch(changeSheetData({
                 id: sheetData.id,
                 data: {clientName: fileWorker.getClientName(filePath),
                 fileIsUpload: true,
-                excelFileName: fileWorker.getExcelFileName(filePath)}}))
+                excelFilePath: "Files/" + sheetData.id + "/" + exFileName,
+                excelFileName: exFileName}}))
             setClientName(fileWorker.getClientName(filePath))
             setBasketIcon(true)
             ipcRenderer.send('file-drop', filePath, pathTo);
