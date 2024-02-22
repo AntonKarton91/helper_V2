@@ -1,5 +1,7 @@
 import {columnEnumerate} from "../Utils/columnEnumerate";
-
+const electron = window.require('electron');
+const { spawn } = window.require('child_process');
+const robot = window.require("@jitsi/robotjs");
 const Excel = window.require('exceljs')
 
 
@@ -21,29 +23,41 @@ export class ExcelClass {
         this.sheet = this.book.getWorksheet(1);
     }
 
-    async resetExcelFile (){
+    async resetExcelFile (filePath: string){
         const columnArr = columnEnumerate(150)
         const cell = this.sheet.getCell("D2");
-        cell.value = 420
-        // for (let column of columnArr) {
-        //     const cell = this.sheet.getCell(column + "2");
-        //     console.log(cell.fill);
-        //     cell.value = 0
-        //     if (cell.hasOwnProperty("fgColor")) {
-        //         if (cell.fill.fgColor.rgb === "FFFF00" && cell.value && typeof cell.value == "number") {
-        //             cell.value = 0
-        //         }
-        //     }
-        //
-        // }
-
-
+        const cell1 = this.sheet.getCell("F2");
+        cell.value = 10
+        cell1.value = 10
+        this.sheet.eachRow((row: any) => {
+            row.eachCell((cell: any) => {
+                if (cell.formula) {
+                    cell.value = { formula: cell.formula };
+                }
+            });
+        });
     }
+
+    async rebuildExcelFile(filePath: string) {
+        const child = await spawn("process.env.REACT_APP_EXCEL_START_DELAY", [filePath])
+        setTimeout(async ()=> {
+            robot.keyTap('s', ['control']);
+        }, 200)
+        setTimeout(async ()=> {
+            child.kill()
+    })}
 
 
     async excelSave(filePath: string) {
-        this.book.xlsx.writeFile(filePath)
+        await this.book.xlsx.writeFile(filePath)
+        await this.rebuildExcelFile(filePath)
     }
+
+    async aa() {
+        console.log(this.sheet.getCell("C3").result)
+    }
+
+
 
 
 

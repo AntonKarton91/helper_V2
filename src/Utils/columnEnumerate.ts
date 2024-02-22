@@ -21,6 +21,5 @@ export const columnEnumerate = (count: number): String[] => {
         }
         ++n
     }
-    console.log(outArr)
     return outArr
 }

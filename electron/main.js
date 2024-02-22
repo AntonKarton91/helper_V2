@@ -12,14 +12,13 @@ ipcMain.on('file-drop', (event, filePath, pathTo) => {
         });
 });
 
-
 function createWindow () {
     const mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
         }
     })
 
@@ -30,7 +29,6 @@ function createWindow () {
         slashes: true
     });
     mainWindow.webContents.openDevTools();
-
     mainWindow.loadURL(startUrl);
 
 }
@@ -45,7 +43,19 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', function () {
-    // Для приложений и строки меню в macOS является обычным делом оставаться
-    // активными до тех пор, пока пользователь не выйдет окончательно используя Cmd + Q
     if (process.platform !== 'darwin') app.quit()
 })
+
+app.on('before-quit', () => {
+    const directoryPath = path.resolve(__dirname, "../Files")
+    fs.readdir(directoryPath, (err, files) => {
+        if (err) {
+            console.error('Ошибка чтения папки:', err);
+            return;
+        }
+        files.forEach(file => {
+            const filePath = path.join(directoryPath, file);
+            fs.rmSync(filePath, { recursive: true, force: true });
+        });
+    });
+});
