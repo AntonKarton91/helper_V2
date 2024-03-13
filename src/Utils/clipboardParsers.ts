@@ -16,7 +16,7 @@ export const excelBufferParsing = async (): Promise<string[][]> => {
 }
 
 
-export const gradientSetParsing = async (): Promise<{shelfNumber: number, displays: string[]}[]> => {
+export const gradientShelfParsing = async (): Promise<{shelfNumber: number, displays: string[]}[]> => {
     let inputArr = await  excelBufferParsing()
     inputArr = inputArr.filter(e=>e[0].includes("полк"))
     return inputArr.map(e => {
@@ -24,3 +24,4 @@ export const gradientSetParsing = async (): Promise<{shelfNumber: number, displa
         return  {shelfNumber: numb, displays: e.slice(1)}
     })
 }
+

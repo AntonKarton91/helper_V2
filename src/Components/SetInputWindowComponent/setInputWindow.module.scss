@@ -1,7 +1,20 @@
 .container {
+  overflow: auto;
+  max-height: 85vh;
   min-width: 50px;
   min-height: 50px;
   padding: 5px;
-  border: 1px solid gray;
+  width: 100%;
+  flex-grow: 2;
+}
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+.row {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 3px;
 }
 

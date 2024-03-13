@@ -1,74 +1,79 @@
 import React, {DetailedHTMLProps, HTMLAttributes, useEffect, useState} from 'react';
-import FileBasketComponent from "../FileBasket/FileBasketComponent";
+import FileBasketComponent, {IBasketStatus} from "../FileBasket/FileBasketComponent";
 import {useAppDispatch, useAppSelector} from "../../Store/hooks";
 import SetInputWindowComponent from "../SetInputWindowComponent/SetInputWindowComponent";
 import {ISheet} from "../../Store/Reducers/Main/types";
 import {calculationType} from "../../Pages/OrderCalculationPage";
 import {ExcelClass} from "../../EXCEL/Excel";
+import {CalcType} from "../Layout/LayoutComponent";
+import {Button} from "@mui/material";
+import styles from "./setCalculation.module.scss"
 
 
 
 export interface SetCalculationProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-    id: string
 }
 
-const SetCalculationComponent = ({id}: SetCalculationProps): React.ReactElement => {
+const SetCalculationComponent = ({}: SetCalculationProps): React.ReactElement => {
     const { sheetList, appStatus } = useAppSelector(state => state.main)
-    const dispatch = useAppDispatch()
-    const [sheetData, setSheetData] = useState<ISheet>({
-        id: "",
-        name: "",
-        type: calculationType.Set,
-        fileIsUpload: false,
-        clientName: "",
-        excelFileName: "",
-        excelFilePath: ""
-    })
-
-    useEffect(()=> {
-        const s = sheetList.find(s=>s.id === id)
-        if (s) {
-            setSheetData(s)
-        }
-    }, [sheetList])
+    const [clientName, setClientName] = useState<string>("")
+    const [excelFileName, setExcelFileName] = useState<string>("")
+    const [excelFilePath, setExcelFilePath] = useState<string>("")
 
 
     const click = async () => {
         const excel = new ExcelClass()
-        await excel.sheetInit(sheetData.excelFilePath)
-        await excel.resetExcelFile(sheetData.excelFilePath)
-        await excel.excelSave(sheetData.excelFilePath)
+        await excel.sheetInit(excelFilePath)
+        await excel.resetExcelFile(excelFilePath)
+        await excel.excelSave(excelFilePath)
+    }
+    const click1 = async () => {
+        const excel = new ExcelClass()
+        await excel.sheetInit(excelFilePath)
+        await excel.aa()
     }
 
-    // const click = async () => {
-    //     const excel = new ExcelClass()
-    //     await excel.sheetInit(sheetData.excelFilePath)
-    //     await excel.resetExcelFile(sheetData.excelFilePath)
-    //     await excel.excelSave(sheetData.excelFilePath)
-    //     const child = await spawn("C:\\Program Files (x86)\\Microsoft Office\\Office16\\EXCEL.EXE", [sheetData.excelFilePath])
-    //     setTimeout(async ()=> {
-    //         robot.keyTap('s', ['control']);
-    //     }, 200)
-    //     setTimeout(async ()=> {
-    //         child.kill()
-    //
-    //         const excel1 = new ExcelClass()
-    //         await excel1.sheetInit(sheetData.excelFilePath)
-    //         await excel1.aa()
-    //         // ks.sendCombination(['control', 's']);
-    //     }, 300)
 
-
-
-
-    // }
+    const fileUploadHandler = (clientName: string, excelFilePath: string, excelFileName: string) => {
+        setClientName(clientName)
+        setExcelFileName(excelFileName)
+        setExcelFilePath(excelFilePath)
+    }
 
     return (
-        <div>
-            <button onClick={click}>aaa</button>
-            setCalculationComponent id={id}
-            <SetInputWindowComponent/>
-            <FileBasketComponent sheetData={sheetData}/>
+        <div className={styles.container}>
+            <div className={styles.inputWindow}>
+                Окно ввода
+                <SetInputWindowComponent/>
+            </div>
+            <div className={styles.controlWindow}>
+
+                    {
+                        clientName ? <div className={styles.buttonBlock}>
+                            <Button
+                                color={"primary"}
+                                size={"small"}
+                                variant={"contained"}
+                                onClick={click}
+                            >Обнулить</Button>
+                            <Button
+                                color={"primary"}
+                                size={"small"}
+                                variant={"contained"}
+                                onClick={click}
+                            >Расчитать</Button>
+                        </div> : <div>Добавьте файл</div>
+                    }
+                <FileBasketComponent
+                    type={CalcType.matCalculation}
+                    clientName={clientName}
+                    excelFileName={excelFileName}
+                    fileUploadHandler={fileUploadHandler}
+                />
+            </div>
+
+
+
 
         </div>
     );

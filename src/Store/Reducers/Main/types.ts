@@ -1,9 +1,9 @@
 import {calculationType} from "../../../Pages/OrderCalculationPage";
+import {IInputSetArray} from "../../../Utils/setWorkers";
 
 export interface IMainState {
-    sheetList: ISheet[]
+    inputSetArray: IInputSetArray[]
     appStatus: {
-        activeSheet: string
         isLoading: boolean
         isError: boolean,
         message: string

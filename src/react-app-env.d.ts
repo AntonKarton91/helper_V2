@@ -1,2 +1,1 @@
-REACT_APP_EXCEL_START_DELAY="C:\\Program Files (x86)\\Microsoft Office\\Office16\\EXCEL.EXE"
-EXCEL_START_DELAY=200
+REACT_APP_EXCEL_PATH="C:\\Program Files (x86)\\Microsoft Office\\Office16\\EXCEL.EXE"
