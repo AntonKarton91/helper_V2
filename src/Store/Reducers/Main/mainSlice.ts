@@ -24,6 +24,30 @@ export const mainSlice = createSlice({
             state.inputSetArray = action.payload
         },
 
+        deleteRowInputSetArray: (state, action: PayloadAction<number>) => {
+            const newAr = [...state.inputSetArray]
+            state.inputSetArray = newAr.filter(e=> {
+               return e.index !== action.payload
+            })
+        },
+
+        changeRowInputSetArray: (state, action: PayloadAction<{newVal: string | number, index: number, type: string}>) => {
+            // @ts-ignore
+            state.inputSetArray = [...state.inputSetArray].map(r=>{
+                if (r.index === action.payload.index) {
+                    if (action.payload.type === "art") {
+                        return {...r, displayArticul: action.payload.newVal}
+                    } else return {...r, displayCount: action.payload.newVal}
+                } else return {...r}
+            })
+
+
+
+        },
+
+
+
+
     },
     extraReducers: (builder) => {
         // builder
@@ -56,7 +80,9 @@ export const mainSlice = createSlice({
 })
 
 export const {
+    changeRowInputSetArray,
     addInputSetArray,
+    deleteRowInputSetArray,
 } = mainSlice.actions
 
 export default mainSlice.reducer

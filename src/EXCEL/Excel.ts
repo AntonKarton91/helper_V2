@@ -1,10 +1,11 @@
 import {columnEnumerate} from "../Utils/columnEnumerate";
+import {IInputSetArray} from "../Utils/setWorkers";
 const electron = window.require('electron');
 const { spawn } = window.require('child_process');
 const robot = window.require("@jitsi/robotjs");
 const Excel = window.require('exceljs')
 const ps = window.require('ps-node')
-
+const kill1  = window.require('tree-kill');
 export class ExcelClass {
     private filePath: string;
     private book: any;
@@ -22,6 +23,7 @@ export class ExcelClass {
         await this.book.xlsx.readFile(filePath)
         this.sheet = this.book.getWorksheet(1);
     }
+
     recalcForulas() {
         this.sheet.eachRow((row: any) => {
             row.eachCell((cell: any) => {
@@ -34,17 +36,13 @@ export class ExcelClass {
 
     async resetExcelFile (filePath: string){
         for (let col = 1; col <= 300; col++) {
-            const cell = this.sheet.getCell(2, col);
+            const cellName = this.sheet.getCell(1, col);
+            const cellVal = this.sheet.getCell(2, col);
+            if (!!cellName.value) {
+                cellVal.value = 0;
+            }
 
-            cell.value = 0;
         }
-        this.sheet.eachRow((row: any) => {
-            row.eachCell((cell: any) => {
-                if (cell.formula) {
-                    cell.value = { formula: cell.formula };
-                }
-            });
-        });
         this.recalcForulas()
 
     }
@@ -66,10 +64,9 @@ export class ExcelClass {
                     clearTimeout(timeout)
                     robot.keyTap('s', ['control']);
                     setTimeout(() => {
-                        child.kill()
+                       // kill1(child.pid)
                     }, 50)
                 }})
-            console.log(321321)
         }, 300)
         const timeout = setTimeout(() => {
             clearInterval(interval)
@@ -84,10 +81,76 @@ export class ExcelClass {
         await this.rebuildExcelFile(filePath)
     }
 
-    async aa() {
-        console.log(this.sheet.getCell("C3").result)
+    async excelSaveWithoutRebuild(filePath: string) {
+        await this.book.clearThemes();
+        await this.book.xlsx.writeFile(filePath)
     }
 
+    async aa() {
+        console.log(this.sheet.getCell("D2"))
+    }
+
+
+    async changeExcelWithSet (filePath: string, inputArray: IInputSetArray[]){
+        const articulArray = inputArray.map(d=>(d.displayArticul).replace(/[^\d]/g, ''))
+         for (let col = 1; col <= 300; col++) {
+            const cell = this.sheet.getCell(1, col);
+            for (let i of articulArray) {
+                if (!!cell.value) {
+                    let cellVal
+                    if (typeof cell.value === "string") {
+                        cellVal = cell.value
+                    }
+                    else if (typeof cell.value === "object") {
+                        cellVal = cell.value.text
+                    }
+                    else break
+
+                    if (cellVal?.includes(i)) {
+                        const disp = inputArray.find(d=>d.displayArticul.includes(i))
+                        const countCell = this.sheet.getCell(2, col);
+                        if (disp) {
+                            countCell.value = countCell.value + disp.displayCount
+                            this.boxesCount(col)
+                        }
+                    }
+                    }
+                }
+
+        }
+        this.recalcForulas()
+
+    }
+
+    boxesCount(displayCellCol: number, displayName: string) {
+        let boxes: {cellRow: number, boxData: string}[] = []
+        for (let row = 1; row <= 300; row++) {
+            const boxCell = this.sheet.getCell(row, 1)
+            const valCell = this.sheet.getCell(row, displayCellCol);
+            if (boxCell.value) {
+                if ((boxCell.value.includes("Короб") || boxCell.value.includes("короб")) && valCell.value) {
+                    const item = boxes.find(i=>i.cellRow === row)
+
+                    if (item) {
+                        boxes = [...boxes].map(b=>{
+                            if (b.cellRow === row) {
+                                return {...b, boxData: b.boxData + 1}
+                            }
+                            else return b
+                        })
+                    }
+                    else {
+                        boxes.push({
+                            cellRow: row,
+                            boxData: boxCell.value + " " +
+                        })
+                    }
+                }
+
+            }
+        }
+        console.log(boxes)
+    }
 
 
 

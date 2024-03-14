@@ -15,7 +15,7 @@ export interface SetCalculationProps extends DetailedHTMLProps<HTMLAttributes<HT
 }
 
 const SetCalculationComponent = ({}: SetCalculationProps): React.ReactElement => {
-    const { sheetList, appStatus } = useAppSelector(state => state.main)
+    const { inputSetArray } = useAppSelector(state => state.main)
     const [clientName, setClientName] = useState<string>("")
     const [excelFileName, setExcelFileName] = useState<string>("")
     const [excelFilePath, setExcelFilePath] = useState<string>("")
@@ -28,9 +28,16 @@ const SetCalculationComponent = ({}: SetCalculationProps): React.ReactElement =>
         await excel.excelSave(excelFilePath)
     }
     const click1 = async () => {
-        const excel = new ExcelClass()
-        await excel.sheetInit(excelFilePath)
-        await excel.aa()
+        try {
+            const excel = new ExcelClass()
+            await excel.sheetInit(excelFilePath)
+            await excel.changeExcelWithSet(excelFilePath, inputSetArray)
+            await excel.excelSave(excelFilePath)
+        }
+        catch (e) {
+            console.log(111)
+        }
+
     }
 
 
@@ -42,6 +49,8 @@ const SetCalculationComponent = ({}: SetCalculationProps): React.ReactElement =>
 
     return (
         <div className={styles.container}>
+
+
             <div className={styles.inputWindow}>
                 Окно ввода
                 <SetInputWindowComponent/>
@@ -60,7 +69,7 @@ const SetCalculationComponent = ({}: SetCalculationProps): React.ReactElement =>
                                 color={"primary"}
                                 size={"small"}
                                 variant={"contained"}
-                                onClick={click}
+                                onClick={click1}
                             >Расчитать</Button>
                         </div> : <div>Добавьте файл</div>
                     }

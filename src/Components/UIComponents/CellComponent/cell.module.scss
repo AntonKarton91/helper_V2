@@ -1,13 +1,12 @@
 .container {
   min-width: 100px;
   min-height: 20px;
-  width: 350px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 250px;
   border: 1px solid gray;
   padding: 2px;
   word-wrap: anywhere;
   font-size: 13px;
+  resize: none;
+  overflow: auto;
 }
 
